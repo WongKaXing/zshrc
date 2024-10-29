@@ -120,6 +120,9 @@ source $ZSH/oh-my-zsh.sh
 # homebrew bin path
 export PATH="/opt/homebrew/bin:$PATH"
 
+# source fzf
+source <(fzf --zsh)
+
 # python bin path
 
 # Created by `pipx` on 2024-08-16 13:35:02
@@ -151,9 +154,11 @@ alias icat='kitty +kitten icat'
 alias ssh='kitty +kitten ssh'
 alias cs='cowsay'
 alias cp='cp -r'
+alias catz='cat ~/.zshrc'
 alias neo='neofetch'
 alias ra='ranger'
 alias soup='source ./venv/bin/activate'
+alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Documents/.Date/Video'
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
