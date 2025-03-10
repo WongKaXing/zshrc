@@ -155,7 +155,6 @@ alias re='sudo reboot'
 alias op='open .'
 alias pip='pip3'
 alias py='python3'
-alias ra='ranger'
 alias rfmm='rm -rf /Users/soc/Library/Application\ Support/MarkMind'
 alias souz='source ~/.zshrc'
 alias soup='source ./venv/bin/activate'
@@ -163,6 +162,7 @@ alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias to='touch'
 alias te='tree'
+alias ya='yazi'
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
