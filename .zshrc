@@ -147,7 +147,7 @@ alias icat='kitty +kitten icat'
 alias lg='lazygit'
 alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Downloads'
 alias mm='cd /Users/soc/Library/Application\ Support/MarkMind'
-alias czg='cp ~/.zshrc ~/Documents/Git/zshrc/'
+alias cg='cp ~/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
 alias nvz='nv ~/.zshrc'
 alias nv.='nv .'
 alias ne='neofetch'
@@ -164,7 +164,7 @@ alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias to='touch'
 alias te='tree'
-alias ya='yazi'
+alias a='yazi'
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
