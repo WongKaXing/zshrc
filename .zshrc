@@ -5,6 +5,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+export EDITOR=/opt/homebrew/bin/nvim
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -17,6 +21,7 @@ export ZSH="/Users/soc/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="agnoster"
 ZSH_THEME="powerlevel10k/powerlevel10k"
+
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -148,11 +153,11 @@ alias lg='lazygit'
 alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Downloads'
 alias mm='cd /Users/soc/Library/Application\ Support/MarkMind'
 alias zg='cp ~/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
+alias nv='nvim .'
 alias nvz='nv ~/.zshrc'
-alias nv.='nv .'
 alias ne='neofetch'
-alias nv='nvim'
 alias rr='rm -rf'
+alias rrd='rm -rf .DS_Store'
 alias re='sudo reboot'
 alias op='open .'
 alias pip='pip3'
@@ -167,6 +172,3 @@ alias te='tree'
 alias a='yazi'
 
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-export EDITOR=/opt/homebrew/bin/nvim
