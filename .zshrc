@@ -141,7 +141,7 @@ export PATH="$PATH:/opt/homebrew/bin/python3"
 
 eval "$(zoxide init zsh)"
 alias catz='cat ~/.zshrc'
-alias cl='clear'
+alias c='clear'
 alias cls='clear'
 alias cs='cowsay'
 alias cp='cp -r'
