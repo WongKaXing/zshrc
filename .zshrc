@@ -140,11 +140,13 @@ export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_pr
 export PATH="$PATH:/opt/homebrew/bin/python3"
 
 eval "$(zoxide init zsh)"
+alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
 alias catz='cat ~/.zshrc'
 alias c='clear'
 alias cls='clear'
 alias cs='cowsay'
 alias cp='cp -r'
+alias e='exit'
 alias f='fzf'
 alias gs='git status'
 alias gpa='git push -u gitee && echo "\n**************************************\n" && git push -u origin'
@@ -159,6 +161,7 @@ alias nvz='nv ~/.zshrc'
 alias ne='neofetch'
 alias rr='rm -rf'
 alias rrd='rm -rf .DS_Store'
+alias rrg='rm -rf .git'
 alias re='sudo reboot'
 alias op='open .'
 alias pip='pip3'
