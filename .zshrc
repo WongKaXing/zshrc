@@ -141,9 +141,11 @@ export PATH="$PATH:/opt/homebrew/bin/python3"
 
 eval "$(zoxide init zsh)"
 alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
+alias a='yazi'
 alias cz='cat ~/.zshrc'
 alias c='clear'
 alias cl='clear'
+alias cls='clear'
 alias cs='cowsay'
 alias cp='cp -r'
 alias e='exit'
@@ -152,17 +154,17 @@ alias g='git'
 alias gdd='git add .'
 alias gs='git status'
 alias gmm='git commit -m'
-alias gpa='git push -u gitee main && echo "\n**************************************\n" && git push -u origin main'
+alias gpa='find . -name ".DS_Store" -type f -delete && echo "\n************⬇️ Gitee ⬇️*************\n" && git push -u gitee && echo "\n************⬇️ GitHub ⬇️*************\n" && git push -u github'
 alias icat='kitty +kitten icat'
 alias lg='lazygit'
 alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Downloads'
 alias mm='cd /Users/soc/Library/Application\ Support/MarkMind'
-alias zg='cp ~/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
 alias nv='nvim'
 alias nv.='nvim .'
 alias nvz='nv ~/.zshrc'
 alias ne='neofetch'
 alias rr='rm -rf'
+alias rra='rm -rf *'
 alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrg='rm -rf .git'
 alias re='sudo reboot'
@@ -176,6 +178,11 @@ alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias to='touch'
 alias te='tree'
-alias a='yazi'
+alias zg='cp ~/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
+alias zz='..'
 
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
