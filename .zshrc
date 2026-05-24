@@ -1,19 +1,25 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
+# export TERM="xterm-256color"  # 终端类型：启用 256 色支持（已注释）
+
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-export EDITOR=/opt/homebrew/bin/nvim
+export EDITOR=/opt/homebrew/bin/nvim  # 默认文本编辑器：指定为 Neovim
+
+# fastfetch: 禁用 instant prompt 后放在最前面，即开即显且不被清屏
+if [[ -o interactive ]]; then
+    fastfetch --pipe false 2>/dev/null
+fi
+
+# 禁用 p10k instant prompt，避免启动时清屏把 fastfetch 刷掉
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+
 
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH  # 自定义可执行文件搜索路径（已注释）
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/soc/.oh-my-zsh"
+export ZSH="/Users/soc/.oh-my-zsh"  # oh-my-zsh 安装目录路径
+
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -21,7 +27,6 @@ export ZSH="/Users/soc/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 # ZSH_THEME="agnoster"
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -93,20 +98,20 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
+# export MANPATH="/usr/local/man:$PATH"  # 手册页搜索路径（已注释）
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+# export LANG=en_US.UTF-8  # 系统语言环境：英文 UTF-8（已注释）
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
+#   export EDITOR='vim'  # SSH 远程会话时使用 vim
 # else
-#   export EDITOR='mvim'
+#   export EDITOR='mvim'  # 本地会话时使用 MacVim
 # fi
 
 # Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+# export ARCHFLAGS="-arch x86_64"  # 编译架构标志：指定 x86_64（已注释）
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -123,66 +128,103 @@ source $ZSH/oh-my-zsh.sh
 #path
 
 # homebrew bin path
-export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/bin:$PATH"  # 将 Homebrew 可执行文件目录加入系统路径
 
 # source fzf
 source <(fzf --zsh)
 
+# uv autocompletion
+eval "$(uv generate-shell-completion zsh)"
+
 # python bin path
 
 # Created by `pipx` on 2024-08-16 13:35:02
-export PATH="$PATH:/Users/soc/.local/bin"
+export PATH="$PATH:/Users/soc/.local/bin"  # pipx 安装的 Python 工具目录
 
 # clash path
-export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_proxy=socks5://127.0.0.1:7897
+export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_proxy=socks5://127.0.0.1:7897  # 网络代理设置：HTTP/HTTPS/SOCKS5 代理指向本地 Clash
 
 # python path
-export PATH="$PATH:/opt/homebrew/bin/python3"
+export PATH="$PATH:/opt/homebrew/bin/python3"  # Python3 可执行文件路径
+
+# nvim path
+export EDITOR="/opt/homebrew/bin/nvim"  # 默认编辑器路径：Neovim
 
 eval "$(zoxide init zsh)"
-alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
+
+# alias
 alias a='yazi'
-alias cz='cat ~/.zshrc'
-alias c='clear'
-alias cl='clear'
+alias airport='/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
+alias b='brew'
+alias ba='brew upgrade && brew update && brew cleanup'
+alias bc='echo "bc is disabled. Use \bc if you really need it."'
+alias cld='claude --settings ~/.claude/settings.deepseek.json --permission-mode bypassPermissions'
+alias clk='claude --settings ~/.claude/settings.kimi.json --permission-mode bypassPermissions'
 alias cls='clear'
-alias cs='cowsay'
 alias cp='cp -r'
+alias cs='clear'
+alias cz='cat ~/.zshrc'
+alias syncfg='cp -r ~/.config/kitty/* ~/Documents/Git/kitty/ && cp -r ~/.config/yazi/* ~/Documents/Git/yazi/ && cp -r ~/.config/nvim/* ~/Documents/Git/nvim/ && cp ~/.zshrc ~/Documents/Git/zshrc/ && for d in kitty yazi nvim zshrc; do cd ~/Documents/Git/$d && git add -A && (git diff --cached --quiet && echo "$d: no changes to commit" || git commit -m "update $(date +%Y-%m-%d)") && git push gitee && git push github; done && cd ~/Documents/Git/zshrc && echo "All configs synced and pushed."'
 alias e='exit'
 alias f='fzf'
 alias g='git'
 alias gdd='git add .'
-alias gs='git status'
 alias gmm='git commit -m'
 alias gpa='find . -name ".DS_Store" -type f -delete && echo "\n************  Gitee  ************\n" && git push -u gitee && echo "\n************  GitHub  *************\n" && git push -u github'
+alias gs='git status'
 alias icat='kitty +kitten icat'
 alias lg='lazygit'
+alias ll='eza -la --icons --group-directories-first'
+alias ls='eza --icons --group-directories-first'
+alias lt='eza --tree --icons'
 alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Downloads'
 alias mm='cd /Users/soc/Library/Application\ Support/MarkMind'
+alias ne='neofetch'
 alias nv='nvim'
 alias nv.='nvim .'
+alias nvk='nv ~/.config/kitty/kitty.conf'
 alias nvz='nv ~/.zshrc'
-alias ne='neofetch'
+alias op='open .'
+alias pip='pip3'
+alias pr='uv run python'
+alias py='python3'
+alias pye='deactivate'
+alias re='sudo reboot'
+alias rfmm='rm -rf /Users/soc/Library/Application\ Support/MarkMind'
 alias rr='rm -rf'
 alias rra='rm -rf *'
 alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrg='rm -rf .git'
-alias re='sudo reboot'
-alias op='open .'
-alias pip='pip3'
-alias py='python3'
-alias rfmm='rm -rf /Users/soc/Library/Application\ Support/MarkMind'
+alias souk='source ~/.config/kitty/kitty.conf'
+alias soup='source ./.venv/bin/activate'
 alias souz='source ~/.zshrc'
-alias soup='source ./venv/bin/activate'
 alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
-alias to='touch'
 alias te='tree'
-alias zg='cp ~/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
+alias to='touch'
+alias uvp='uv pip install'
+# zg alias merged into syncfg
 alias zz='..'
 
 
+# export NVM_DIR="$HOME/.nvm"  # Node Version Manager 安装目录（已注释）
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm  # 加载 nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion  # 加载 nvm 命令补全
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# yazi Shell wrapper, 按`y`启用yazi，选到路径后退出yazi，即可定位到该路径
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
+# nvim pwd
+export EDITOR="/opt/homebrew/bin/nvim"  # 默认编辑器：Neovim（备用设置）
+
+export CLICOLOR=1  # 启用终端命令输出颜色（如 ls）
+export CLICOLOR_FORCE=1  # 强制启用颜色输出，即使输出到管道也保留颜色
+
+export PATH=~/.npm-global/bin:$PATH  # npm 全局安装包的可执行文件路径
