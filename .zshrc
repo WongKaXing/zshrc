@@ -203,9 +203,7 @@ alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias te='tree'
 alias to='touch'
-alias uvp='uv pip install'
-# syncfg alias merged into gpa
-alias zz='..'
+alias upip='uv pip install'
 
 
 # export NVM_DIR="$HOME/.nvm"  # Node Version Manager 安装目录（已注释）
