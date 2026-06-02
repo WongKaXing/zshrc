@@ -1,13 +1,10 @@
-# p10k prompt
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 
 # ------------------------------
 # oh-my-zsh
 # ------------------------------
 
 export ZSH="/Users/soc/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 
 plugins=(
 	git
@@ -17,6 +14,7 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+eval "$(starship init zsh)"
 
 # ------------------------------
 # PATH
@@ -65,8 +63,8 @@ alias ba='brew upgrade && brew update && brew cleanup'
 alias bc='echo "bc is disabled. Use \bc if you really need it."'
 alias cld='claude --settings ~/.claude/settings.deepseek.json --permission-mode bypassPermissions'
 alias clk='claude --settings ~/.claude/settings.kimi.json --permission-mode bypassPermissions'
+alias cls='clear'
 alias cp='cp -r'
-alias cs='clear'
 alias cz='cat ~/.zshrc'
 alias e='exit'
 alias f='fzf'
@@ -74,6 +72,7 @@ alias g='git'
 alias gc='git clone'
 alias gdd='git add .'
 alias gmm='git commit -m'
+alias gpa='cp -rf ~/.config/starship.toml ~/Documents/Git/starship/ && cp -rf ~/.config/alacritty/* ~/Documents/Git/alacritty/ && cp -rf ~/.config/kitty/* ~/Documents/Git/kitty/ && cp -rf ~/.config/nvim/* ~/Documents/Git/nvim/ && cp -rf ~/.config/yazi/* ~/Documents/Git/yazi/ && cp -f ~/.zshrc ~/Documents/Git/zshrc/ && for d in alacritty kitty nvim yazi zshrc starship; do cd ~/Documents/Git/$d && find . -name ".DS_Store" -type f -delete && git add -A && (git diff --cached --quiet && echo "$d: no changes to commit" || git commit -m "update $(date +%Y-%m-%d)") && echo "\n************  Gitee  ************\n" && git push gitee && echo "\n************  GitHub  ************\n" && git push github; done && cd ~/Documents/Git/zshrc && echo "All configs synced and pushed."'
 alias gs='git status'
 alias icat='kitty +kitten icat'
 alias la='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
@@ -104,6 +103,7 @@ alias souk='kitten @ load-config'
 alias soup='source ./.venv/bin/activate'
 alias souz='clear && source ~/.zshrc'
 alias ssh='kitty +kitten ssh'
+alias starship='nv ~/.config/starship.toml'
 alias targz='tar xzvf'
 alias te='tree'
 alias upip='uv pip install'
