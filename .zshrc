@@ -21,13 +21,14 @@ eval "$(starship init zsh)"
 # ------------------------------
 
 # homebrew
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 
 # npm
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 # python / pipx
-export PATH="$PATH:/opt/homebrew/bin/python3"
+export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 
 
@@ -37,10 +38,12 @@ export PATH="$PATH:$HOME/.local/bin"
 
 export EDITOR="/opt/homebrew/bin/nvim"
 
-# clash proxy
-export https_proxy=http://127.0.0.1:7897
-export http_proxy=http://127.0.0.1:7897
-export all_proxy=socks5://127.0.0.1:7897
+# clash proxy (only set when proxy is alive, otherwise curl hangs on timeout)
+if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
+	export https_proxy=http://127.0.0.1:7897
+	export http_proxy=http://127.0.0.1:7897
+	export all_proxy=socks5://127.0.0.1:7897
+fi
 
 
 # ------------------------------
@@ -75,9 +78,8 @@ alias gmm='git commit -m'
 alias gpa='cp -rf ~/.config/starship.toml ~/Documents/Git/starship/ && cp -rf ~/.config/alacritty/* ~/Documents/Git/alacritty/ && cp -rf ~/.config/kitty/* ~/Documents/Git/kitty/ && cp -rf ~/.config/nvim/* ~/Documents/Git/nvim/ && cp -rf ~/.config/yazi/* ~/Documents/Git/yazi/ && cp -f ~/.zshrc ~/Documents/Git/zshrc/ && n=0 && for d in alacritty kitty nvim yazi zshrc starship; do n=$((n+1)) && printf "\n========= %s (%d/6) =========\n" "$d" $n && cd ~/Documents/Git/$d && find . -name ".DS_Store" -type f -delete && git add -A && (git diff --cached --quiet && echo "  (no changes)" || git commit -m "update $(date +%Y-%m-%d)") && printf "\n  >> Gitee:\n" && git push gitee && printf "\n  >> GitHub:\n" && git push github; done && printf "\n========= All configs synced and pushed. =========\n" && cd '
 alias gs='git status'
 alias icat='kitty +kitten icat'
-alias la='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
-alias lg='lazygit'
-alias ll='eza -la --icons --group-directories-first'
+alias la='eza -la --icons --group-directories-first'
+alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
 alias ls='eza -x --icons --group-directories-first'
 alias lt='eza --tree --icons'
 alias m3d='/Users/soc/Downloads/m3u8-downloader -sp=/Users/soc/Downloads'
@@ -99,13 +101,14 @@ alias rr='rm -rf'
 alias rra='rm -rf *'
 alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrg='rm -rf .git'
+alias xf='sudo xattr -rd com.apple.quarantine '
 alias souk='kitten @ load-config'
 alias soup='source ./.venv/bin/activate'
+alias soud='deactivate'
 alias souz='clear && source ~/.zshrc'
 alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias te='tree'
-alias upip='uv pip install'
 
 
 # ------------------------------
