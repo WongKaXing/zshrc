@@ -12,6 +12,7 @@ plugins=(
 	zsh-syntax-highlighting
 )
 
+fpath=(~/.zsh/completions $fpath)
 source $ZSH/oh-my-zsh.sh
 
 eval "$(starship init zsh)"
@@ -51,7 +52,6 @@ fi
 # ------------------------------
 
 source <(fzf --zsh)
-eval "$(uv generate-shell-completion zsh)"
 eval "$(zoxide init zsh)"
 
 
@@ -85,6 +85,7 @@ alias re='sudo reboot'
 alias rr='rm -rf'
 alias rra='rm -rf *'
 alias rrd='find . -name ".DS_Store" -type f -delete'
+alias rrm='rm -rf main.py'
 alias rrg='rm -rf .git'
 alias xf='sudo xattr -rd com.apple.quarantine '
 alias soup='source ./.venv/bin/activate'
