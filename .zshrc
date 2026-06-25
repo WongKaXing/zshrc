@@ -32,14 +32,10 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 
-
-# ------------------------------
-# Environment Variables
-# ------------------------------
-
+# nvim
 export EDITOR="/opt/homebrew/bin/nvim"
 
-# clash proxy (only set when proxy is alive, otherwise curl hangs on timeout)
+# clash proxy (仅在代理处于活动状态时设置，否则curl会超时挂起))
 if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
 	export https_proxy=http://127.0.0.1:7897
 	export http_proxy=http://127.0.0.1:7897
@@ -98,7 +94,7 @@ alias te='tree'
 
 
 # ------------------------------
-# Functions
+# 功能
 # ------------------------------
 
 # yazi: cd to selected directory on exit
