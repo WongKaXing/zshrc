@@ -35,6 +35,13 @@ export PATH="$PATH:$HOME/.local/bin"
 # nvim
 export EDITOR="/opt/homebrew/bin/nvim"
 
+# zip2john
+export PATH="/opt/homebrew/bin:$PATH"
+
+# sqlmap
+export PATH="/opt/homebrew/bin:$PATH"
+export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
+
 # clash proxy (仅在代理处于活动状态时设置，否则curl会超时挂起))
 if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
 	export https_proxy=http://127.0.0.1:7897
@@ -59,14 +66,20 @@ alias a='yazi'
 alias ba='brew update && brew upgrade && brew cleanup'
 alias bc='echo "bc is disabled. Use \bc if you really need it."'
 alias cld='claude --settings ~/.claude/settings.deepseek.json --permission-mode bypassPermissions'
+alias clm='claude --settings ~/.claude/settings.mimo.json --permission-mode bypassPermissions'
 alias clk='claude --settings ~/.claude/settings.kimi.json --permission-mode bypassPermissions'
 alias cls='clear'
+alias com='docker compose up -d'
 alias cp='cp -r'
+alias cy='docker compose -f ~/Documents/Docker/cyberchef/docker-compose.yml up -d'
+alias cyst='docker stop cyberchef'
 alias cz='cat ~/.zshrc'
+alias dv='docker compose -f ~/Documents/Docker/dvwa/docker-compose.yml up -d'
+alias dvst='docker stop dvwa dvwadb'
 alias e='exit'
 alias f='fzf'
-# alias gp='cp -rf ~/.config/starship.toml ~/Documents/Git/starship/ && cp -rf ~/.config/alacritty/* ~/Documents/Git/alacritty/ && cp -rf ~/.config/kitty/* ~/Documents/Git/kitty/ && cp -rf ~/.config/nvim/* ~/Documents/Git/nvim/ && cp -rf ~/.config/yazi/* ~/Documents/Git/yazi/ && cp -f ~/.zshrc ~/Documents/Git/zshrc/ && n=0 && for d in alacritty kitty nvim yazi zshrc starship; do n=$((n+1)) && printf "\n========= %s (%d/6) =========\n" "$d" $n && cd ~/Documents/Git/$d && find . -name ".DS_Store" -type f -delete && git add -A && (git diff --cached --quiet && echo "  (no changes)" || git commit -m "update $(date +%Y-%m-%d)") && printf "\n  >> Gitee:\n" && git push gitee && printf "\n  >> GitHub:\n" && git push github; done && printf "\n========= All configs synced and pushed. =========\n" && cd '
 alias icat='kitty +kitten icat'
+alias images='docker images'
 alias la='eza -la --icons --group-directories-first'
 alias lg='lazygit'
 alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
@@ -77,6 +90,12 @@ alias nvc='nv ~/.claude.json'
 alias nvk='nv ~/.config/kitty/kitty.conf'
 alias nvz='nv ~/.zshrc'
 alias op='open .'
+alias pa='docker ps -a'
+alias pan='docker compose -f ~/Documents/Docker/1panel/docker-compose.yml up -d'
+alias panst='docker stop 1panel 1panelmysql'
+alias pika='docker compose -f ~/Documents/Docker/pikachu/docker-compose.yml up -d'
+alias pikast='docker stop pikachu pikadb'
+alias pss='docker ps'
 alias pyrun='uv run python'
 alias re='sudo reboot'
 alias rr='rm -rf'
@@ -85,9 +104,14 @@ alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrm='rm -rf main.py'
 alias rrg='rm -rf .git'
 alias xf='sudo xattr -rd com.apple.quarantine '
-alias soup='source ./.venv/bin/activate'
+# sqlmap 通用前缀：清除代理
+_sqlmap_unset='unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy'
+# sqlmap 别名（全部带 unset，VPN 开关均可使用）
+alias sql="$_sqlmap_unset && sqlmap --batch"
 alias soud='deactivate'
-alias souz='clear && kitten @ load-config && source ~/.zshrc'
+alias souk='clear && kitten @ load-config'
+alias soup='source ./.venv/bin/activate'
+alias souz='clear && source ~/.zshrc'
 alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias te='tree'
@@ -105,3 +129,9 @@ function y() {
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
 	rm -f -- "$tmp"
 }
+
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/soc/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
