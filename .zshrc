@@ -6,7 +6,6 @@ export ZSH="/Users/soc/.oh-my-zsh"
 ZSH_THEME=""
 
 plugins=(
-	git
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
@@ -91,17 +90,26 @@ alias ls='eza -x --icons --group-directories-first'
 alias lt='eza --tree --icons'
 
 
+# git
+alias ga='git add .'
+alias gm='git commit -m'
+alias gpe='git push -u gitee main'
+alias gpt='git push -u github main'
+
 # homebrew
 alias ba='brew update && brew upgrade && brew cleanup'
 alias bc='echo "bc is disabled. Use \bc if you really need it."'
 
+
 # lazygit
 alias lg='lazygit'
+
 
 # system
 alias cls='clear'
 alias cp='cp -r'
 alias cz='cat ~/.zshrc'
+alias cpz='cp -r ~/.zshrc ~/Documents/Git/zshrc/'
 alias e='exit'
 alias f='fzf'
 alias icat='kitty +kitten icat'
@@ -127,14 +135,17 @@ alias te='tree'
 alias zc='cd ~/.config'
 alias zz='z -'
 
+
 # sqlmap
 # sqlmap 通用前缀：清除代理
 _sqlmap_unset='unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy'
 # sqlmap 别名（全部带 unset，VPN 开关均可使用）
 alias sql="$_sqlmap_unset && sqlmap --batch"
 
+
 # uv
 alias pyrun='uv run python'
+
 
 # yazi
 alias a='yazi'
