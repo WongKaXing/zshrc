@@ -1,4 +1,3 @@
-
 # ------------------------------
 # oh-my-zsh
 # ------------------------------
@@ -15,6 +14,7 @@ plugins=(
 fpath=(~/.zsh/completions $fpath)
 source $ZSH/oh-my-zsh.sh
 
+# starship
 eval "$(starship init zsh)"
 
 # ------------------------------
@@ -54,7 +54,9 @@ fi
 # Tool Initialization
 # ------------------------------
 
+ # fzf
 source <(fzf --zsh)
+ # zoxide
 eval "$(zoxide init zsh)"
 
 
@@ -62,41 +64,52 @@ eval "$(zoxide init zsh)"
 # Aliases
 # ------------------------------
 
-alias a='yazi'
-alias ba='brew update && brew upgrade && brew cleanup'
-alias bc='echo "bc is disabled. Use \bc if you really need it."'
+# claude
 alias cld='claude --settings ~/.claude/settings.deepseek.json --permission-mode bypassPermissions'
-alias clm='claude --settings ~/.claude/settings.mimo.json --permission-mode bypassPermissions'
 alias clk='claude --settings ~/.claude/settings.kimi.json --permission-mode bypassPermissions'
-alias cls='clear'
+alias clm='claude --settings ~/.claude/settings.mimo.json --permission-mode bypassPermissions'
+alias clw='claude --settings ~/.claude/settings.qwen.json --permission-mode bypassPermissions'
+
+# docker
 alias com='docker compose up -d'
-alias cp='cp -r'
 alias cy='docker compose -f ~/Documents/Docker/cyberchef/docker-compose.yml up -d'
 alias cyst='docker stop cyberchef'
-alias cz='cat ~/.zshrc'
 alias dv='docker compose -f ~/Documents/Docker/dvwa/docker-compose.yml up -d'
 alias dvst='docker stop dvwa dvwadb'
-alias e='exit'
-alias f='fzf'
-alias icat='kitty +kitten icat'
 alias images='docker images'
-alias la='eza -la --icons --group-directories-first'
-alias lg='lazygit'
-alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
-alias ls='eza -x --icons --group-directories-first'
-alias lt='eza --tree --icons'
-alias nv='nvim'
-alias nvc='nv ~/.claude.json'
-alias nvk='nv ~/.config/kitty/kitty.conf'
-alias nvz='nv ~/.zshrc'
-alias op='open .'
 alias pa='docker ps -a'
 alias pan='docker compose -f ~/Documents/Docker/1panel/docker-compose.yml up -d'
 alias panst='docker stop 1panel 1panelmysql'
 alias pika='docker compose -f ~/Documents/Docker/pikachu/docker-compose.yml up -d'
 alias pikast='docker stop pikachu pikadb'
 alias pss='docker ps'
-alias pyrun='uv run python'
+
+# eza
+alias la='eza -la --icons --group-directories-first'
+alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
+alias ls='eza -x --icons --group-directories-first'
+alias lt='eza --tree --icons'
+
+
+# homebrew
+alias ba='brew update && brew upgrade && brew cleanup'
+alias bc='echo "bc is disabled. Use \bc if you really need it."'
+
+# lazygit
+alias lg='lazygit'
+
+# system
+alias cls='clear'
+alias cp='cp -r'
+alias cz='cat ~/.zshrc'
+alias e='exit'
+alias f='fzf'
+alias icat='kitty +kitten icat'
+alias nv='nvim'
+alias nvc='nv ~/.claude.json'
+alias nvk='nv ~/.config/kitty/kitty.conf'
+alias nvz='nv ~/.zshrc'
+alias op='open .'
 alias re='sudo reboot'
 alias rr='rm -rf'
 alias rra='rm -rf *'
@@ -104,10 +117,6 @@ alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrm='rm -rf main.py'
 alias rrg='rm -rf .git'
 alias xf='sudo xattr -rd com.apple.quarantine '
-# sqlmap 通用前缀：清除代理
-_sqlmap_unset='unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy'
-# sqlmap 别名（全部带 unset，VPN 开关均可使用）
-alias sql="$_sqlmap_unset && sqlmap --batch"
 alias soud='deactivate'
 alias souk='clear && kitten @ load-config'
 alias soup='source ./.venv/bin/activate'
@@ -115,10 +124,24 @@ alias souz='clear && source ~/.zshrc'
 alias ssh='kitty +kitten ssh'
 alias targz='tar xzvf'
 alias te='tree'
+alias zc='cd ~/.config'
+alias zz='z -'
+
+# sqlmap
+# sqlmap 通用前缀：清除代理
+_sqlmap_unset='unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy'
+# sqlmap 别名（全部带 unset，VPN 开关均可使用）
+alias sql="$_sqlmap_unset && sqlmap --batch"
+
+# uv
+alias pyrun='uv run python'
+
+# yazi
+alias a='yazi'
 
 
 # ------------------------------
-# 功能
+# Function
 # ------------------------------
 
 # yazi: cd to selected directory on exit
@@ -134,4 +157,3 @@ function y() {
 fpath=(/Users/soc/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
-# End of Docker CLI completions
