@@ -115,6 +115,7 @@ alias targz='tar xzvf'
 alias te='tree'
 alias xf='sudo xattr -rd com.apple.quarantine '
 alias zc='cd ~/.config'
+alias zd='cd /tmp && cld'
 alias zm='cd /tmp'
 alias zz='z -'
 alias zcl='cd ~/.claude'
@@ -129,10 +130,11 @@ alias nvc='nv ~/.claude.json'
 
 # --- docker (local) ---
 # 系统级
-alias com='docker compose up -d'
-alias images='docker images'
-alias pa='docker ps -a'
-alias pss='docker ps'
+alias dcom='docker compose up -d'
+alias dim='docker images'
+alias dps='docker ps --format "table {{.Names}} {{.Ports}}"'
+alias dpsa='docker ps -a'
+
 
 # cyberchef
 alias cy='docker compose -f ~/Documents/Docker/cyberchef/docker-compose.yml up -d'
@@ -186,6 +188,8 @@ alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/d
 
 # --- ssh ---
 alias de='ssh -p 2222 soc@100.67.58.98'
+alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
+alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
 
 # ------------------------------
 # Function
