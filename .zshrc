@@ -122,6 +122,7 @@ alias zcl='cd ~/.claude'
 
 # --- claude ---
 alias cc='current=$(claude --version | awk "{print \$1}"); latest=$(npm view @anthropic-ai/claude-code version); [ "$current" = "$latest" ] && echo "✅ Claude Code 已是最新 ($current)" || echo "⬆️ 有新版: $latest (当前: $current) → npm i -g @anthropic-ai/claude-code@latest"'
+alias clc='claude --settings ~/.claude/settings.chatgpt.json --permission-mode bypassPermissions'
 alias cld='claude --settings ~/.claude/settings.deepseek.json --permission-mode bypassPermissions'
 alias clk='claude --settings ~/.claude/settings.kimi.json --permission-mode bypassPermissions'
 alias clm='claude --settings ~/.claude/settings.mimo.json --permission-mode bypassPermissions'
