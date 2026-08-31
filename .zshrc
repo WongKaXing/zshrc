@@ -44,9 +44,13 @@ export PATH="$HOME/.npm-global/bin:$PATH"
 # nvim
 export EDITOR="/opt/homebrew/bin/nvim"
 
+# obsidian
+export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
 # python / pipx
 export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
+export PATH="/Library/Frameworks/Python.framework/Versions/3.12/bin:${PATH}"
 
 # sqlmap
 export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
@@ -55,11 +59,22 @@ export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
 # Environment
 # ------------------------------
 
+# Homebrew - USTC mirror
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+export HOMEBREW_CASK_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
+export HOMEBREW_PIP_INDEX_URL="https://mirrors.ustc.edu.cn/pypi/web/simple"
+
 # clash proxy (仅在代理处于活动状态时设置，否则curl会超时挂起)
 if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
 	export https_proxy=http://127.0.0.1:7897
 	export http_proxy=http://127.0.0.1:7897
 	export all_proxy=socks5://127.0.0.1:7897
+	# 大写形式（原 .zprofile 无条件设置，合并后改为仅在代理活动时生效）
+	export HTTPS_PROXY=http://127.0.0.1:7897
+	export HTTP_PROXY=http://127.0.0.1:7897
 fi
 
 # Fix terminal type for yazi and other TUI apps
@@ -70,6 +85,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export DOCKER_CONFIG="$HOME/.config/docker"
 export PUB_CACHE="$HOME/.local/share/pub-cache"
+
 # API keys（敏感，存于 secrets.zsh，被 .gitignore 排除，不入库）
 if [[ -f "$ZDOTDIR/secrets.zsh" ]]; then
 	source "$ZDOTDIR/secrets.zsh"
