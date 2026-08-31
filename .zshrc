@@ -27,12 +27,12 @@ eval "$(starship init zsh)"
 # PATH
 # ------------------------------
 
+# dsh
+export PATH="$HOME/.dsh/bin:$PATH"
+
 # homebrew
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-
-# dsh
-export PATH="$HOME/.dsh/bin:$PATH"
 
 # java
 export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"
@@ -59,14 +59,6 @@ export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
 # Environment
 # ------------------------------
 
-# Homebrew - USTC mirror
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-export HOMEBREW_CASK_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
-export HOMEBREW_PIP_INDEX_URL="https://mirrors.ustc.edu.cn/pypi/web/simple"
-
 # clash proxy (仅在代理处于活动状态时设置，否则curl会超时挂起)
 if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
 	export https_proxy=http://127.0.0.1:7897
@@ -79,6 +71,14 @@ fi
 
 # Fix terminal type for yazi and other TUI apps
 export TERM=xterm-256color
+
+# Homebrew - USTC mirror
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+export HOMEBREW_CASK_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
+export HOMEBREW_PIP_INDEX_URL="https://mirrors.ustc.edu.cn/pypi/web/simple"
 
 # XDG / config directories
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -95,16 +95,16 @@ fi
 # Tool Initialization
 # ------------------------------
 
+# docker
+# Docker Desktop completions (已在 oh-my-zsh 之前加载 fpath)
+
 # fzf
 source <(fzf --zsh)
 
 # lazygit
 # (no init needed, just alias)
 
-# zoxide
-eval "$(zoxide init zsh)"
-
-# NVM (lazy load — 延迟加载，首次使用 node/npm/nvm 时才初始化)
+# nvm (lazy load — 延迟加载，首次使用 node/npm/nvm 时才初始化)
 export NVM_DIR="$HOME/.nvm"
 lazy_load_nvm() {
   unset -f nvm node npm npx yarn pnpm corepack 2>/dev/null
@@ -115,7 +115,8 @@ for cmd in nvm node npm npx yarn pnpm corepack; do
   eval "$cmd() { lazy_load_nvm; $cmd \"\$@\" }"
 done
 
-# Docker Desktop completions (已在 oh-my-zsh 之前加载 fpath)
+# zoxide
+eval "$(zoxide init zsh)"
 
 # ------------------------------
 # Aliases
@@ -153,15 +154,15 @@ alias au='\
   echo ""; \
   echo "🔍 [4/4] 检查并自动更新 dsh..."; \
   dshup'
+alias ch='rr ~/.thumbnails ~/.adobe ~/.ntfstool ~/.playwright-* ~/.dart-tool ~/.immich-photos-sync.log ~/.zsh-defer ~/.cc-switch ~/.claude.json ~/Temp ~/.zcompdump* 2>/dev/null; echo "✅ 已清理无用缓存"'
 alias cls='clear'
 alias cp='cp -r'
-alias cz='cat ~/.config/zsh/.zshrc'
 alias cpz='cp -r ~/.config/zsh/.zshrc ~/Documents/Git/zshrc/'
+alias cz='cat ~/.config/zsh/.zshrc'
 alias e='exit'
 alias f='fzf'
 alias fa='clear && LC_TIME=en_US.UTF-8 fastfetch'
 alias ff='ffmpeg'
-alias imgo='immich-go upload from-folder -s http://100.67.58.98:2283 -k ***REMOVED-IMMICH-KEY*** --manage-heic-jpeg StackCoverHEIC ~/Pictures/Photos\ Library.photoslibrary'
 alias la='eza -la --icons --group-directories-first'
 alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
 alias ls='eza -x --icons --group-directories-first'
@@ -173,19 +174,18 @@ alias re='sudo reboot'
 alias rr='rm -rf'
 alias rra='rm -rf *'
 alias rrd='find . -name ".DS_Store" -type f -delete'
-alias ch='rr ~/.thumbnails ~/.adobe ~/.ntfstool ~/.playwright-* ~/.dart-tool ~/.immich-photos-sync.log ~/.zsh-defer ~/.cc-switch ~/.claude.json ~/Temp ~/.zcompdump* 2>/dev/null; echo "✅ 已清理无用缓存"'
-alias rrm='rm -rf main.py'
 alias rrg='rm -rf .git'
+alias rrm='rm -rf main.py'
 alias souz='clear && source ~/.config/zsh/.zshrc'
 alias sql="unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy && sqlmap --batch"
 alias targz='tar xzvf'
 alias te='tree'
 alias xf='sudo xattr -rd com.apple.quarantine '
 alias zc='cd ~/.config'
+alias zcl='cd ~/.claude'
 alias zd='cd /tmp && cld'
 alias zm='cd /tmp'
 alias zz='z -'
-alias zcl='cd ~/.claude'
 
 # --- aibalance ---
 alias aibre='cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp_macOS_v1.0.2 && killall AIBalanceApp 2>/dev/null; xcodebuild -scheme AIBalanceApp -configuration Release -destination "platform=macOS" -derivedDataPath /tmp/aibuild build && rm -rf /Applications/AIBalanceApp.app && ditto /tmp/aibuild/Build/Products/Release/AIBalanceApp.app /Applications/AIBalanceApp.app && open /Applications/AIBalanceApp.app'
@@ -216,7 +216,6 @@ alias dim='docker images'
 alias dps='docker ps --format "table {{.Names}} {{.Ports}}"'
 alias dpsa='docker ps -a'
 
-
 # cyberchef
 alias cy='docker compose -f ~/Documents/Docker/cyberchef/docker-compose.yml up -d'
 alias cyst='docker stop cyberchef'
@@ -234,9 +233,8 @@ alias pika='docker compose -f ~/Documents/Docker/pikachu/docker-compose.yml up -
 alias pikast='docker stop pikachu pikadb'
 
 # --- docker (Debian remote) ---
-alias dcom='ssh debian "cd ~/docker && docker-compose"'
+alias dcomr='ssh debian "cd ~/docker && docker-compose"'
 alias ddockge="ssh -f -N -L 5001:localhost:5001 debian 2>/dev/null; open http://localhost:5001"
-
 
 # --- git ---
 alias ga='git add .'
@@ -265,24 +263,8 @@ alias soup='source ./.venv/bin/activate'
 
 # --- rsync (sync) ---
 alias gamepush='rsync -avz /Users/soc/Documents/Docker/douyin-game/ soc@100.67.58.98:/home/soc/douyin-game/ -e "ssh -p 2222"'
+alias imgo="immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH_API_KEY --manage-heic-jpeg StackCoverHEIC $HOME/Pictures/Photos Library.photoslibrary"
 alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
-
-# 从 Debian 拉文件到 Mac（断点续传 + 进度条）
-dlpull() {
-    if [[ -z "$1" ]]; then
-        echo "Usage: dlpull <remote-path> [local-dest]" >&2
-        return 1
-    fi
-    local src="$1"
-    local dest="${2:-$HOME/Downloads/debian-pull/}"
-    mkdir -p "$dest"
-    rsync -avzPs "debian-home:$src" "$dest"
-}
-
-# 列出 Debian 远程目录文件（方便复制确切文件名）
-dlls() {
-    ssh debian-home ls -lh "${1:-/home/soc/downloads/aria2/}"
-}
 
 # --- ssh ---
 alias de='ssh -p 2222 soc@100.67.58.98'
@@ -295,13 +277,29 @@ alias t='tmux attach-session -t main 2>/dev/null || tmux new-session -s main'
 alias tkill='tmux kill-server'
 alias tl='tmux ls'
 
-
 # --- uv ---
 alias ur="uv run"
 
 # ------------------------------
 # Function
 # ------------------------------
+
+# 列出 Debian 远程目录文件（方便复制确切文件名）
+dlls() {
+    ssh debian-home ls -lh "${1:-/home/soc/downloads/aria2/}"
+}
+
+# 从 Debian 拉文件到 Mac（断点续传 + 进度条）
+dlpull() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: dlpull <remote-path> [local-dest]" >&2
+        return 1
+    fi
+    local src="$1"
+    local dest="${2:-$HOME/Downloads/debian-pull/}"
+    mkdir -p "$dest"
+    rsync -avzPs "debian-home:$src" "$dest"
+}
 
 # 让 sudo 支持 alias 展开
 sudo() {
