@@ -1,0 +1,6 @@
+# 敏感文件，绝不入库
+secrets.zsh
+secrets
+*.secret
+.env
+.env.*
