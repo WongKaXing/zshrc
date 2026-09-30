@@ -12,6 +12,7 @@ plugins=(
 )
 
 fpath=($ZDOTDIR/completions $fpath)
+
 # Docker completions 必须在 oh-my-zsh (compinit) 之前加载
 fpath=($HOME/.config/docker/completions $fpath)
 source $ZSH/oh-my-zsh.sh
@@ -47,6 +48,9 @@ export EDITOR="/opt/homebrew/bin/nvim"
 # obsidian
 export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
 
+# script
+export PATH="$PATH:$HOME/script"
+
 # python / pipx
 export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
@@ -69,8 +73,8 @@ if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
 	export HTTP_PROXY=http://127.0.0.1:7897
 fi
 
-# Fix terminal type for yazi and other TUI apps
-export TERM=xterm-256color
+# Fix terminal type for TUI apps；但保留 kitty 的 xterm-kitty（否则 yazi 认不出 Kitty 图形协议，图片预览变马赛克）
+[[ $TERM != xterm-kitty ]] && export TERM=xterm-256color
 
 # Homebrew - USTC mirror
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
@@ -79,6 +83,9 @@ export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 export HOMEBREW_CASK_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
 export HOMEBREW_PIP_INDEX_URL="https://mirrors.ustc.edu.cn/pypi/web/simple"
+
+# ollama (Debian 远程模型服务)
+export OLLAMA_HOST="100.67.58.98:11434"
 
 # XDG / config directories
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -117,6 +124,8 @@ done
 
 # zoxide
 eval "$(zoxide init zsh)"
+# z 的 Tab 补全改为列出 zoxide 缓存目录（补全函数见 completions/_z，必须紧跟在 init 之后重新注册）
+compdef _z z
 
 # ------------------------------
 # Aliases
@@ -184,6 +193,7 @@ alias zcl='cd ~/.claude'
 alias zd='cd /tmp && cld'
 alias zm='cd /tmp'
 alias zz='z -'
+alias z1='cd /Users/soc/Applications/.1'
 
 # --- aibalance ---
 alias aibre='cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp_macOS_v1.0.2 && killall AIBalanceApp 2>/dev/null; xcodebuild -scheme AIBalanceApp -configuration Release -destination "platform=macOS" -derivedDataPath /tmp/aibuild build && rm -rf /Applications/AIBalanceApp.app && ditto /tmp/aibuild/Build/Products/Release/AIBalanceApp.app /Applications/AIBalanceApp.app && open /Applications/AIBalanceApp.app'
@@ -199,13 +209,16 @@ alias clw='claude --settings ~/.claude/settings.qwen.json --permission-mode bypa
 alias nvc='nv ~/.claude.json'
 
 # --- dsh ---
-alias dshde='ssh -f -N -L 3081:localhost:3080 debian'
+alias dshde='lsof -tiTCP:3081 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -L 3081:localhost:3080 debian; sleep 1; open http://localhost:3081'
+alias dshdeb='u=$(command ssh debian /home/soc/.dsh/bin/dsh-url) && printf %s "$u" | pbcopy && open "$u" && echo "🔗 $u （已复制到剪贴板）"'
 alias dshh='dsh --profile headless'
-alias dshre='lsof -tiTCP:3080 -sTCP:LISTEN | xargs kill 2>/dev/null; for i in {1..20}; do lsof -tiTCP:3080 -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.5; done; nohup dsh web >/tmp/dsh-web.log 2>&1 & disown; echo "✅ dsh web 已重启 → http://localhost:3080"'
+alias dshplug='~/.dsh/bin/dsh-update --auto'
+alias dshre='lsof -tiTCP:3080 -sTCP:LISTEN | xargs kill 2>/dev/null; for i in {1..20}; do lsof -tiTCP:3080 -sTCP:LISTEN >/dev/null 2>&1 || break; sleep 0.5; done; nohup dsh web >/tmp/dsh-web.log 2>&1 & disown; for i in {1..40}; do lsof -tiTCP:3080 -sTCP:LISTEN >/dev/null 2>&1 && break; sleep 0.5; done; sleep 1; dshu'
 alias dshst='lsof -tiTCP:3080 -sTCP:LISTEN | xargs kill 2>/dev/null'
-alias dshsync='rsync -avz -e "ssh -p 2222" ~/.dsh/ soc@100.67.58.98:~/.dsh/ --exclude sessions --exclude data --include "storages/dsh_memory.json" --exclude "storages/*" --exclude profiles/web/node_modules --exclude profiles/node_modules --exclude .anonymous-user-id --exclude .DS_Store && echo "✅ dsh 配置已同步到 Debian"'
+alias dshsync='~/.dsh/bin/dshsync.sh'
+alias dshu='u=$(grep -o "http://[^ ]*token=[A-Za-z0-9_-]*" /tmp/dsh-web.log | tail -1); echo "$u"; [ -n "$u" ] && printf %s "$u" | pbcopy'
 alias dshup='installed=$(dsh --version 2>/dev/null); latest=$(npm view @deepseek-ai/dsh version 2>/dev/null); if [ -z "$latest" ]; then echo "⚠️ 无法获取最新版本（检查网络）"; elif [ "$installed" = "$latest" ]; then echo "✅ dsh 已是最新 ($installed)"; else echo "⬆️ 发现新版: $latest (当前: $installed)，正在更新..."; npm install -g @deepseek-ai/dsh@latest && echo "✅ 更新完成: $(dsh --version)；重启 web 生效: dshre"; fi'
-alias dshw='nohup dsh web >/tmp/dsh-web.log 2>&1 & disown; echo "DSH Web UI → http://localhost:3080"'
+alias dshw='nohup dsh web >/tmp/dsh-web.log 2>&1 & disown; for i in {1..40}; do lsof -tiTCP:3080 -sTCP:LISTEN >/dev/null 2>&1 && break; sleep 0.5; done; sleep 1; dshu'
 
 # --- docker (local) ---
 # 系统级
@@ -218,10 +231,6 @@ alias dpsa='docker ps -a'
 alias cy='docker compose -f ~/Documents/Docker/cyberchef/docker-compose.yml up -d'
 alias cyst='docker stop cyberchef'
 
-# dockge
-alias dg='docker compose -f ~/Documents/Docker/dockge/docker-compose.yml up -d'
-alias dgst='docker stop dockge'
-
 # dvwa
 alias dv='docker compose -f ~/Documents/Docker/dvwa/docker-compose.yml up -d'
 alias dvst='docker stop dvwa dvwadb'
@@ -230,9 +239,14 @@ alias dvst='docker stop dvwa dvwadb'
 alias pika='docker compose -f ~/Documents/Docker/pikachu/docker-compose.yml up -d'
 alias pikast='docker stop pikachu pikadb'
 
+# portainer
+alias pce='cd ~/Documents/Docker/portainer && docker compose up -d'
+alias pcelog='docker logs -f portainer'
+alias pcest='cd ~/Documents/Docker/portainer && docker compose down'
+
 # --- docker (Debian remote) ---
 alias dcomr='ssh debian "cd ~/docker && docker-compose"'
-alias ddockge="ssh -f -N -L 5001:localhost:5001 debian 2>/dev/null; open http://localhost:5001"
+alias dpce="ssh -f -N -L 9000:localhost:9000 debian 2>/dev/null; open http://localhost:9000"
 
 # --- git ---
 alias ga='git add .'
@@ -254,6 +268,18 @@ alias ssh='kitty +kitten ssh'
 # --- lazygit ---
 alias lg='lazygit'
 
+# --- lua ---
+alias lj='luajit'
+alias lu='lua'
+
+# --- ollama ---
+alias br='ssh -p 2222 soc@100.67.58.98 "~/ollama/daily-brief.sh"'
+alias o14='ollama run qwen3:14b'
+alias o8='ollama run qwen3:8b'
+alias ols='ollama list'
+alias omc='ssh -p 2222 -t soc@100.67.58.98 /home/soc/ollama/.venv/bin/python /home/soc/ollama/mchat.py'
+alias ops='ollama ps'
+
 # --- python ---
 alias pyrun='uv run python'
 alias soud='deactivate'
@@ -265,15 +291,9 @@ alias imgo="immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH
 alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
 
 # --- ssh ---
-alias de='ssh -p 2222 soc@100.67.58.98'
+alias de='ssh debian'
 alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
 alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
-
-# --- tmux ---
-alias nvt='nv ~/.config/tmux/tmux.conf'
-alias t='tmux attach-session -t main 2>/dev/null || tmux new-session -s main'
-alias tkill='tmux kill-server'
-alias tl='tmux ls'
 
 # --- uv ---
 alias ur="uv run"
