@@ -7,8 +7,8 @@ ZSH_THEME=""
 zstyle ':omz:update' mode disabled
 
 plugins=(
-	zsh-autosuggestions
-	zsh-syntax-highlighting
+    zsh-autosuggestions
+    zsh-syntax-highlighting
 )
 
 fpath=($ZDOTDIR/completions $fpath)
@@ -65,12 +65,12 @@ export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
 
 # clash proxy (仅在代理处于活动状态时设置，否则curl会超时挂起)
 if lsof -i :7897 -sTCP:LISTEN -t >/dev/null 2>&1; then
-	export https_proxy=http://127.0.0.1:7897
-	export http_proxy=http://127.0.0.1:7897
-	export all_proxy=socks5://127.0.0.1:7897
-	# 大写形式（原 .zprofile 无条件设置，合并后改为仅在代理活动时生效）
-	export HTTPS_PROXY=http://127.0.0.1:7897
-	export HTTP_PROXY=http://127.0.0.1:7897
+    export https_proxy=http://127.0.0.1:7897
+    export http_proxy=http://127.0.0.1:7897
+    export all_proxy=socks5://127.0.0.1:7897
+    # 大写形式（原 .zprofile 无条件设置，合并后改为仅在代理活动时生效）
+    export HTTPS_PROXY=http://127.0.0.1:7897
+    export HTTP_PROXY=http://127.0.0.1:7897
 fi
 
 # Fix terminal type for TUI apps；但保留 kitty 的 xterm-kitty（否则 yazi 认不出 Kitty 图形协议，图片预览变马赛克）
@@ -95,7 +95,7 @@ export PUB_CACHE="$HOME/.local/share/pub-cache"
 
 # API keys（敏感，存于 secrets.zsh，被 .gitignore 排除，不入库）
 if [[ -f "$ZDOTDIR/secrets.zsh" ]]; then
-	source "$ZDOTDIR/secrets.zsh"
+    source "$ZDOTDIR/secrets.zsh"
 fi
 
 # ------------------------------
@@ -114,12 +114,12 @@ source <(fzf --zsh)
 # nvm (lazy load — 延迟加载，首次使用 node/npm/nvm 时才初始化)
 export NVM_DIR="$HOME/.nvm"
 lazy_load_nvm() {
-  unset -f nvm node npm npx yarn pnpm corepack 2>/dev/null
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    unset -f nvm node npm npx yarn pnpm corepack 2>/dev/null
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 }
 for cmd in nvm node npm npx yarn pnpm corepack; do
-  eval "$cmd() { lazy_load_nvm; $cmd \"\$@\" }"
+    eval "$cmd() { lazy_load_nvm; $cmd \"\$@\" }"
 done
 
 # zoxide
@@ -217,7 +217,7 @@ alias dshre='lsof -tiTCP:3080 -sTCP:LISTEN | xargs kill 2>/dev/null; for i in {1
 alias dshst='lsof -tiTCP:3080 -sTCP:LISTEN | xargs kill 2>/dev/null'
 alias dshsync='~/.dsh/bin/dshsync.sh'
 alias dshu='u=$(grep -o "http://[^ ]*token=[A-Za-z0-9_-]*" /tmp/dsh-web.log | tail -1); echo "$u"; [ -n "$u" ] && printf %s "$u" | pbcopy'
-alias dshup='installed=$(dsh --version 2>/dev/null); latest=$(npm view @deepseek-ai/dsh version 2>/dev/null); if [ -z "$latest" ]; then echo "⚠️ 无法获取最新版本（检查网络）"; elif [ "$installed" = "$latest" ]; then echo "✅ dsh 已是最新 ($installed)"; else echo "⬆️ 发现新版: $latest (当前: $installed)，正在更新..."; npm install -g @deepseek-ai/dsh@latest && echo "✅ 更新完成: $(dsh --version)；重启 web 生效: dshre"; fi'
+alias dshup='installed=$(dsh --version 2>/dev/null); latest=$(/opt/homebrew/bin/npm view @deepseek-ai/dsh version 2>/dev/null); if [ -z "$latest" ]; then echo "⚠️ 无法获取最新版本（检查网络）"; elif [ "$installed" = "$latest" ]; then echo "✅ dsh 已是最新 ($installed)"; else echo "⬆️ 发现新版: $latest (当前: $installed)，正在更新..."; /opt/homebrew/bin/npm install -g --allow-scripts=@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs @deepseek-ai/dsh@latest && echo "✅ 更新完成: $(dsh --version)；重启 web 生效: dshre"; fi'
 alias dshw='nohup dsh web >/tmp/dsh-web.log 2>&1 & disown; for i in {1..40}; do lsof -tiTCP:3080 -sTCP:LISTEN >/dev/null 2>&1 && break; sleep 0.5; done; sleep 1; dshu'
 
 # --- docker (local) ---
@@ -321,20 +321,20 @@ dlpull() {
 
 # 让 sudo 支持 alias 展开
 sudo() {
-  if [[ -n "${aliases[$1]}" ]]; then
-    eval "command sudo ${aliases[$1]} \${@:2}"
-  elif type "$1" &>/dev/null; then
-    command sudo "$@"
-  else
-    command sudo $(whence -p "$1") "${@:2}"
-  fi
+    if [[ -n "${aliases[$1]}" ]]; then
+        eval "command sudo ${aliases[$1]} \${@:2}"
+    elif type "$1" &>/dev/null; then
+        command sudo "$@"
+    else
+        command sudo $(whence -p "$1") "${@:2}"
+    fi
 }
 
 # yazi: cd to selected directory on exit
 function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	command yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$tmp"
-	rm -f -- "$tmp"
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    command yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd <"$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$tmp"
+    rm -f -- "$tmp"
 }
