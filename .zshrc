@@ -163,6 +163,7 @@ alias au='\
   echo ""; \
   echo "🔍 [4/4] 检查并自动更新 dsh..."; \
   dshup'
+alias c='clear'
 alias ch='rr ~/.thumbnails ~/.adobe ~/.ntfstool ~/.playwright-* ~/.dart-tool ~/.immich-photos-sync.log ~/.zsh-defer ~/.cc-switch ~/.claude.json ~/Temp ~/.zcompdump* 2>/dev/null; echo "✅ 已清理无用缓存"'
 alias cls='clear'
 alias cp='cp -r'
