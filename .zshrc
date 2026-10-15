@@ -194,6 +194,7 @@ alias zcl='cd ~/.claude'
 alias zd='cd /tmp && cld'
 alias zk='cd ~/.config/kitty/'
 alias zm='cd /tmp'
+alias zs='cd /Users/soc/Library/Application\ Support/'
 alias zz='z -'
 alias z1='cd /Users/soc/Applications/.1'
 
