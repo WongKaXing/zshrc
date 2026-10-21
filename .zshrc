@@ -138,13 +138,15 @@ alias au='\
   ba; \
   echo "----------------------------------------"; \
   echo ""; \
-  echo "🟢 [2/4] 更新 Node.js (nvm) 和 npm 全局包..."; \
+  echo "🟢 [2/4] 更新 Node.js (nvm) 和 npm 全局包（已排除 dsh，交 [4/4] 处理）..."; \
   lazy_load_nvm; \
   nvm install 22 --reinstall-packages-from=current; \
   nvm alias default 22; \
   npm install -g npm@latest; \
-  npm outdated -g; \
-  npm update -g; \
+  echo "📦 全局包可更新情况（已跳过 @deepseek-ai/*）："; \
+  npm outdated -g 2>/dev/null | grep -v "^@deepseek-ai/" || true; \
+  pkgs=($(npm ls -g --depth=0 --parseable 2>/dev/null | grep "/node_modules/" | sed "s#.*/node_modules/##" | grep -v "^@deepseek-ai/" | grep -v "^npm$")); \
+  if (( ${#pkgs[@]} )); then npm update -g "${pkgs[@]}"; fi; \
   echo "✅ Node: $(node -v), npm: $(npm -v)"; \
   echo "----------------------------------------"; \
   echo ""; \
@@ -195,6 +197,7 @@ alias zd='cd /tmp && cld'
 alias zk='cd ~/.config/kitty/'
 alias zm='cd /tmp'
 alias zs='cd /Users/soc/Library/Application\ Support/'
+alias zu='cd /Users/soc/Documents/Ukulele/个人曲谱'
 alias zz='z -'
 alias z1='cd /Users/soc/Applications/.1'
 
@@ -253,6 +256,7 @@ alias dpce="ssh -f -N -L 9000:localhost:9000 debian 2>/dev/null; open http://loc
 
 # --- git ---
 alias ga='git add .'
+alias gc='git clone'
 alias gm='git commit -m'
 alias gpe='git push -u gitee main'
 alias gpt='git push -u github main'
@@ -297,6 +301,15 @@ alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/d
 alias de='ssh debian'
 alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
 alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
+
+# --- ukulele ---
+alias uke='cd /Users/soc/Documents/Ukulele && npm run dev'
+alias ukeb='cd /Users/soc/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log 2>&1 &'
+alias ukek='lsof -tiTCP:5173 -sTCP:LISTEN | xargs kill'
+alias ukel='tail -f /tmp/uke-dev.log'
+# 练习用：构建后跑静态预览，不受源码改动影响（dev 会 HMR 重载，练习时别用）
+alias ukep='cd /Users/soc/Documents/Ukulele && npm run build && nohup npm run preview > /tmp/uke-preview.log 2>&1 & sleep 3; echo "小U练习室 → http://localhost:4173/"'
+alias ukepk='lsof -tiTCP:4173 -sTCP:LISTEN | xargs kill'
 
 # --- uv ---
 alias ur="uv run"
