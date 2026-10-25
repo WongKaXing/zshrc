@@ -56,6 +56,9 @@ export PATH="/opt/homebrew/opt/python@3.12/libexec/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="/Library/Frameworks/Python.framework/Versions/3.12/bin:${PATH}"
 
+# python venv（pip 库集中管理；追加到末尾，只提供命令，不抢 python3/pip）
+export PATH="$PATH:/Users/soc/Documents/Programe/Python/.venv/bin"
+
 # sqlmap
 export SQLMAP_OUTPUT="/Users/soc/Documents/Sqlmap/output"
 
