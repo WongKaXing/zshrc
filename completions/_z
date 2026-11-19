@@ -1,0 +1,94 @@
+#compdef z
+# z 的 Tab 补全：列出 zoxide 缓存（frecency 数据库）里匹配的目录，并可用 Tab 切换
+#
+# zoxide 0.10.0 没有配置文件，也没有控制补全的开关/环境变量，它自带的补全只会补
+# 「当前目录的子目录」。本文件改为从缓存库取候选：
+#   z lua<TAB>      -> 列出缓存库里匹配 lua 的目录（按 frecency 排序，括号内为分数），
+#                      命令行保持 `z lua` 不动；直接回车 = 跳到分数最高的那个
+#   z lua<TAB><TAB> -> 把第 1 个候选补进命令行，再按 TAB 依次切到第 2、3…个（循环）
+#                      命令行上显示哪个，回车就跳哪个
+#   z lua <TAB>     -> 同 z lua<TAB>（末尾空词不参与匹配）
+#   z <TAB>         -> 保持原行为，补全当前目录的子目录
+#   z Programe<TAB> -> 唯一命中且只有一个参数时，正常补成 `z /绝对/路径`
+# 缓存无命中时（例如输入的是相对路径）退回原来的本地目录补全。
+# 注意：前面已经有关键词时（`z foo bar<TAB>`）只列候选不切换 —— zoxide 匹配的是整串
+# 关键词，此时往命令行塞绝对路径会让 `z foo /path` 匹配不到任何东西。
+#
+# 注册方式：.zshrc 在 `zoxide init zsh` 之后有一行 `compdef _z z`
+# （zoxide init 会用它自带的 __zoxide_z_complete 覆盖 _comps[z]，必须在那之后重新注册）
+#
+# 几个踩过的坑：
+#   1. 变量不要叫 path —— zsh 里 path 与 PATH 绑定，`local path` 会直接把 PATH 清空；
+#   2. 候选是绝对路径、与输入关键词不是前缀关系，直接 compadd 会被 zsh 丢掉（要 -U）；
+#   3. LIST_AMBIGUOUS 默认开着：有公共前缀可插时 zsh 不列候选，所以要多候选择空
+#      compstate[insert] 才会「只列不插」；
+#   4. 判断「上一轮补全的列表还在屏上」看 compstate[old_list] 非空（重复 Tab 时是 shown）；
+#   5. 不用 compstate[insert]=menu 做轮换：zsh 原生菜单状态下回车不 accept-line，
+#      命令会卡在缓冲区里，所以这里自己记下标轮换（普通补全，回车正常）。
+
+# 只在光标位于行尾时补全
+[[ "${#words[@]}" -eq "${CURRENT}" ]] || return 0
+
+# `z -`（OLDPWD）之类的选项形式不做缓存补全
+[[ "${words[-1]}" == -* ]] && return 0
+
+local -a keywords
+keywords=("${(@)words[2,-1]}")
+# 末尾的空词（`z lua <TAB>`）不参与匹配
+[[ -n "${words[-1]}" ]] || keywords=("${(@)keywords[1,-2]}")
+
+# 一个关键词都没输入时，保持 zoxide 原行为：补全当前目录的子目录
+if (( ${#keywords} == 0 )); then
+	_cd -/
+	return 0
+fi
+
+# 轮换用的状态，跨补全调用保留
+typeset -g _z_cache_key _z_cache_prev
+typeset -gi _z_cache_idx
+typeset -ga _z_cache_matches _z_cache_displays
+
+local key="${(j: :)keywords}"
+local cur="${words[CURRENT]}"
+
+# 已经按过一次 Tab（列表还在屏上，或当前词就是上一轮补进去的候选）→ 在这些候选间轮换。
+# 只对「单个关键词」做：前面还有关键词时插绝对路径会让 zoxide 匹配不上。
+if (( ${#words[@]} == 2 && ${#_z_cache_matches} > 1 )) &&
+	{ [[ "$cur" == "$_z_cache_prev" ]] || { [[ -n "${compstate[old_list]}" ]] && [[ "$key" == "$_z_cache_key" ]]; } }; then
+	(( _z_cache_idx = _z_cache_idx % ${#_z_cache_matches} + 1 ))
+	_z_cache_prev="${_z_cache_matches[_z_cache_idx]}"
+	# -S ''：插入候选后不要补那个自动空格，否则下一次 Tab 就变成新参数、轮换会断
+	compadd -U -S '' -- "$_z_cache_prev"
+	return 0
+fi
+
+# 正常一轮：查缓存库（按 frecency 排序），只列候选、不动命令行
+local -a matches displays
+local score dir
+while read -r score dir; do
+	[[ -d "$dir" ]] || continue
+	matches+=("$dir")
+	displays+=("$dir  ($score)")
+done < <(command zoxide query --list --score --exclude "$PWD" -- "${keywords[@]}" 2>/dev/null)
+
+# 缓存没命中就退回本地目录补全
+if (( ${#matches} == 0 )); then
+	_cd -/
+	return 0
+fi
+
+_z_cache_matches=("${matches[@]}")
+_z_cache_displays=("${displays[@]}")
+_z_cache_key="$key"
+_z_cache_idx=0
+
+# -U：候选由 zoxide 判匹配，别让 zsh 再拿输入的关键词去过滤
+compadd -U -V zoxide -d _z_cache_displays -X 'zoxide 缓存目录（再按 TAB 切换）' -- "${matches[@]}"
+
+# 多候选或前面还有关键词时只列候选、不动命令行：
+#   - 多候选时 zsh 会自己插公共前缀（如 /Users/soc/），把 `z lua` 变成 `z /Users/soc/`；
+#   - 前面还有关键词时插绝对路径会让 `z a b` 变成 `z a /path`，zoxide 匹配不上。
+# 只有「唯一命中 + 只有一个参数」才交给 zsh 正常补全成 `z /绝对/路径`（z 对路径直接 cd）。
+if (( ${#words[@]} > 2 || ${#matches} > 1 )); then
+	compstate[insert]=''
+fi
